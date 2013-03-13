@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="jobRepository"
+		class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		lazy-init="true">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="jobLauncher"
+		class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+		<property name="jobRepository" ref="jobRepository" />
+	</bean>
+
+	<bean id="dataSource" destroy-method="close"
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="org.h2.Driver" />
+		<property name="url" value="jdbc:h2:tcp://localhost/mem:db1" />
+	</bean>
+
+	<bean id="simpleBatchFlow" destroy-method="close"
+		class="foo.bar.baz.SimpleBatchFlow">
+		<constructor-arg ref="jobLauncher" />
+		<constructor-arg ref="jobRepository" />
+		<constructor-arg ref="transactionManager" />
+	</bean>
+
+	<bean id="batchBootstrapper" class="foo.bar.baz.SpringBatchBootstrapper">
+		<constructor-arg ref="dataSource" />
+	</bean>
+
+</beans>
