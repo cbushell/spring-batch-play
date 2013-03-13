@@ -22,9 +22,9 @@
 	</bean>
 
 	<bean id="dataSource" destroy-method="close"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-		<property name="driverClass" value="org.h2.Driver" />
-		<property name="url" value="jdbc:h2:tcp://localhost/mem:db1" />
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="org.h2.Driver" />
+		<property name="url" value="jdbc:h2:mem:db1" />
 	</bean>
 
 	<bean id="simpleBatchFlow" destroy-method="close"
